@@ -1,14 +1,18 @@
 package pl.polsl.SPLC.server;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import pl.polsl.SPLC.model.Person;
 import pl.polsl.SPLC.protocol.Protocol;
+import pl.polsl.SPLC.server.OpenStatus;
 
 
 
@@ -21,6 +25,7 @@ import pl.polsl.SPLC.protocol.Protocol;
  */
 public class SingleService extends Thread{
 
+    private final String logFileName = "logs.log";
      /**
      * Buffered input character stream
      */
@@ -68,36 +73,92 @@ public class SingleService extends Thread{
      * Method which handle open door request. 
      */
     private void handleOpenDoorRequest(){
-        boolean openedSuccessful = this.checkPrivileges();
-        if(openedSuccessful){
-            out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);
-            System.out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);
-        }else
-            out.println("NO PRIVILEGES TO OPEN ROOM NR: " + this.protocol.getArguments()[2]);
-        //TODO:
-        //utworzyc i dodac log (mackowski mowil, zeby zrobic tez logi)
+        OpenStatus openedSuccessful = this.checkPrivileges();
+        String singleLogRecord = createSingleLogRecord(openedSuccessful);
+        updateLogFile(singleLogRecord);
      }
     
     /**
      * Checks privileges and open selected doors
      * @return true is person has privileges, otherwise return false
      */
-    private boolean checkPrivileges(){
+    private OpenStatus checkPrivileges(){
         String email = this.protocol.getArguments()[0];
         String password = this.protocol.getArguments()[1];  //TODO: haslo wypadalo by zahashowac (np sha256) ale dla uproszczenia zostawmy poki co tak
         int roomNumberToOpen;
         try{
             roomNumberToOpen = Integer.parseInt(this.protocol.getArguments()[2]);
         }catch(NumberFormatException e){
-            System.out.println("WRONG ROOM NUMBER");
-            out.println("WRONG ROOM NUMBER");
-            return false;
+            return OpenStatus.WRONG_ROOM_NUMBER;
         }
-        
-        for(Person person : this.personsPrivileges)
-            if(person.isPrivileged(email, password, roomNumberToOpen))
-                return true;
-        return false;
+        OpenStatus openStatus;
+        for(Person person : this.personsPrivileges){
+            openStatus = person.isPrivileged(email, password, roomNumberToOpen);
+            if(openStatus == OpenStatus.PRIVILEGED || openStatus == OpenStatus.NO_PRIVILEGES)
+                return openStatus;
+        }
+            
+        return OpenStatus.AUTHORIZATION_FAILED;
+    }
+    
+    /**
+     * Create single log record
+     * @param openedStatus status from opening selected doors
+     * @return new single log record to add to main log file
+     */
+    private String createSingleLogRecord(OpenStatus openedStatus){
+        String singleLogRecord = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Calendar.getInstance().getTime())
+                + " by: " + this.protocol.getArguments()[0]
+                + " IP: " + this.socket.getInetAddress().getHostAddress(); 
+        if(null != openedStatus)
+            switch (openedStatus) {
+                case PRIVILEGED:
+                    singleLogRecord+= " OPENED ROOM NR: " + this.protocol.getArguments()[2];
+                    out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);
+                    System.out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);
+                    break;
+                case NO_PRIVILEGES:
+                    singleLogRecord+= " NO PRIVILEGES TO OPEN ROOM NR: " + this.protocol.getArguments()[2];
+                    System.out.println("NO PRIVILEGES TO OPEN ROOM NR: " + this.protocol.getArguments()[2]);
+                    out.println("NO PRIVILEGES TO OPEN ROOM NR: " + this.protocol.getArguments()[2]);
+                    break;
+                case AUTHORIZATION_FAILED:
+                    singleLogRecord+= " AUTHORIZATION FAILED WHEN OPENING ROOM NR: " + this.protocol.getArguments()[2];
+                    System.out.println("AUTHORIZATION FAILED WHEN OPENING ROOM NR: " + this.protocol.getArguments()[2]);
+                    out.println("AUTHORIZATION FAILED WHEN OPENING ROOM NR: " + this.protocol.getArguments()[2]);
+                    break;
+                case WRONG_ROOM_NUMBER:
+                    singleLogRecord+= " WRONG ROOM NUMBER: " + this.protocol.getArguments()[2];
+                    System.out.println("WRONG ROOM NUMBER");
+                    out.println("WRONG ROOM NUMBER");
+                    break;
+                default:
+                    break;
+        }
+        return singleLogRecord;    
+    }
+    
+    /**
+     * Update main log file
+     * @param singleLogRecord new single log record 
+     */
+    public void updateLogFile(String singleLogRecord){
+        FileWriter fstream = null;
+        BufferedWriter fbw = null;
+        try{
+            fstream = new FileWriter(this.logFileName,true);
+            fbw = new BufferedWriter(fstream);
+            fbw.write(singleLogRecord);
+            fbw.newLine();
+        }catch(IOException ex){
+        }finally{
+            try{
+                if(fbw!=null)
+                    fbw.close();
+                if(fstream!=null)
+                    fstream.close();
+            }catch(IOException e){}
+        }
     }
     
     /**
@@ -108,6 +169,8 @@ public class SingleService extends Thread{
         try {
             while (true) {
                 String clientInput = in.readLine();
+                if(clientInput == null)
+                    break;
                 this.protocol.commandLineHandler(clientInput);
                 switch(this.protocol.getCommand().toUpperCase()){
                     case "OPEN":

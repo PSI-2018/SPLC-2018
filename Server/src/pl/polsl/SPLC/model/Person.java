@@ -2,6 +2,8 @@ package pl.polsl.SPLC.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import pl.polsl.SPLC.server.OpenStatus;
+
 
 /**
  * Contains single person data and privileges
@@ -41,13 +43,13 @@ public class Person {
      * @param roomNumberToOpen person room number passed by client application
      * @return true if has privilege, otherwise return false
      */
-    public boolean isPrivileged(String email, String password, int roomNumberToOpen){
+    public OpenStatus isPrivileged(String email, String password, int roomNumberToOpen){
         if(!this.email.equals(email) || !this.password.equals(password))
-            return false;
+            return OpenStatus.AUTHORIZATION_FAILED;
         for(int privilegedRoom : this.privilegedRooms)
             if(privilegedRoom == roomNumberToOpen)
-                return true;
-        return false;
+                return OpenStatus.PRIVILEGED;
+        return OpenStatus.NO_PRIVILEGES;
     }
     
     /**

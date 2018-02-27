@@ -52,7 +52,7 @@ public class Server {
      * Starts the server
      */
     public void start() {
-        System.out.println("The server has started.");
+        System.out.println("The service has started.");
         try {
             while (true) {
                 Socket socket = serverSocket.accept();
