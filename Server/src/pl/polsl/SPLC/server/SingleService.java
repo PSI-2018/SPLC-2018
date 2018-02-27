@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.List;
 import pl.polsl.SPLC.model.Person;
 import pl.polsl.SPLC.protocol.Protocol;
-import pl.polsl.SPLC.server.OpenStatus;
 
 
 
@@ -38,12 +37,10 @@ public class SingleService extends Thread{
      * Protocol realizing the cipher
      */
     private final Protocol protocol;
-    
     /**
      * Socket representing the connection
      */
     private final Socket socket;
-    
     /**
      * Contain persons data and privileged room numbers
      */
@@ -112,7 +109,7 @@ public class SingleService extends Thread{
                 + " IP: " + this.socket.getInetAddress().getHostAddress(); 
         if(null != openedStatus)
             switch (openedStatus) {
-                case PRIVILEGED:
+                case PRIVILEGED: //poprawne otwarcie drzwi
                     singleLogRecord+= " OPENED ROOM NR: " + this.protocol.getArguments()[2];
                     out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);
                     System.out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);

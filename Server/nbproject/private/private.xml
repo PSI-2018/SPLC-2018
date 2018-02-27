@@ -12,12 +12,11 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/src/pl/polsl/SPLC/server/Server.java</file>
-            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/src/pl/polsl/SPLC/model/Person.java</file>
-            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/src/pl/polsl/SPLC/protocol/ProtocolCommands.java</file>
-            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/src/pl/polsl/SPLC/server/entrypoint/ServerEntrypoint.java</file>
-            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/src/pl/polsl/SPLC/server/SingleService.java</file>
-            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/src/pl/polsl/SPLC/protocol/Protocol.java</file>
+            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/Server/src/pl/polsl/SPLC/model/Person.java</file>
+            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/Server/src/pl/polsl/SPLC/server/OpenStatus.java</file>
+            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/Server/src/pl/polsl/SPLC/server/SingleService.java</file>
+            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/Server/src/pl/polsl/SPLC/protocol/Protocol.java</file>
+            <file>file:/E:/REPOZYTORIA/SPLC_Projekt/Server/src/pl/polsl/SPLC/server/Server.java</file>
         </group>
     </open-files>
 </project-private>
