@@ -42,7 +42,7 @@ public class Server {
         this.personsPrivileges = personsPrivilages;
         try {
             this.serverSocket = new ServerSocket(PORT);
-            System.out.println("The server is ready.");
+            System.out.println("The server configured properly.");
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -52,8 +52,8 @@ public class Server {
      * Starts the server
      */
     public void start() {
-        System.out.println("The service has started.");
         try {
+            System.out.println("The server has started.");
             while (true) {
                 Socket socket = serverSocket.accept();
                 try {

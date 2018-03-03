@@ -164,6 +164,7 @@ public class SingleService extends Thread{
     @Override
     public void run() {
         try {
+            System.out.println("Client connected");
             while (true) {
                 String clientInput = in.readLine();
                 if(clientInput == null)
@@ -183,7 +184,7 @@ public class SingleService extends Thread{
         } finally {
             try {
                 socket.close();
-                System.out.println("The service has ended.");
+                System.out.println("Client disconnected");
             } catch (IOException exception) {
                 System.err.println(exception.getMessage());
             }
