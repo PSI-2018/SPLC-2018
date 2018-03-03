@@ -37,7 +37,7 @@ public class Protocol {
      * Method which check if command is correct
      * @param clientInputLine client input line
      */
-    public void commandLineHandler(String clientInputLine){
+    public void handleCommandLine(String clientInputLine){
         if(clientInputLine == null){
             this.command = "UNKNOWN COMMAND";
             return;

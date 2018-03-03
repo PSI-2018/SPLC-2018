@@ -91,7 +91,7 @@ public class SingleService extends Thread{
         OpenStatus openStatus;
         for(Person person : this.personsPrivileges){
             openStatus = person.isPrivileged(email, password, roomNumberToOpen);
-            if(openStatus == OpenStatus.PRIVILEGED || openStatus == OpenStatus.NO_PRIVILEGES)
+            if(openStatus == OpenStatus.PRIVILEGED || openStatus == OpenStatus.NO_PRIVILEGED)
                 return openStatus;
         }
             
@@ -114,7 +114,7 @@ public class SingleService extends Thread{
                     out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);
                     System.out.println("OPENED ROOM NR: " + this.protocol.getArguments()[2]);
                     break;
-                case NO_PRIVILEGES:
+                case NO_PRIVILEGED:
                     singleLogRecord+= " NO PRIVILEGES TO OPEN ROOM NR: " + this.protocol.getArguments()[2];
                     System.out.println("NO PRIVILEGES TO OPEN ROOM NR: " + this.protocol.getArguments()[2]);
                     out.println("NO PRIVILEGES TO OPEN ROOM NR: " + this.protocol.getArguments()[2]);
@@ -168,7 +168,7 @@ public class SingleService extends Thread{
                 String clientInput = in.readLine();
                 if(clientInput == null)
                     break;
-                this.protocol.commandLineHandler(clientInput);
+                this.protocol.handleCommandLine(clientInput);
                 switch(this.protocol.getCommand().toUpperCase()){
                     case "OPEN":
                         handleOpenDoorRequest();

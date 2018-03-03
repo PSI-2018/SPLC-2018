@@ -49,7 +49,7 @@ public class Person {
         for(int privilegedRoom : this.privilegedRooms)
             if(privilegedRoom == roomNumberToOpen)
                 return OpenStatus.PRIVILEGED;
-        return OpenStatus.NO_PRIVILEGES;
+        return OpenStatus.NO_PRIVILEGED;
     }
     
     /**

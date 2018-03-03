@@ -6,7 +6,7 @@ package pl.polsl.SPLC.server;
  */
 public enum OpenStatus {
     PRIVILEGED,
-    NO_PRIVILEGES,
+    NO_PRIVILEGED,
     AUTHORIZATION_FAILED,
     WRONG_ROOM_NUMBER
 }
