@@ -1,6 +1,8 @@
 package splc.polsl.pl.client.utilities;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -14,9 +16,9 @@ import splc.polsl.pl.client.MainActivity;
 
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     private Context context;
+    private SharedPreferences preferences;
 
-
-    String [] groupNames = {
+    private String [] groupNames = {
             "Pietro 0",
             "Pietro 1",
             "Pietro 2",
@@ -28,7 +30,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             "Pietro 8",
             "Pietro 9",
     };
-    String [][] childNames={
+    private String [][] childNames={
             {"1","2","3","4","5","6","7","8","9","10"},
             {"100","101","102","103","104","105","106","107","108","109","110"},
             {"200","201","202","203","204","205","206","207","208","209","210"},
@@ -44,6 +46,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     public ExpandableListViewAdapter(Context context){
         this.context = context;
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
@@ -93,25 +96,30 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        final TextView textView = new TextView(context);
-        textView.setText(childNames[i][i1]);
-        textView.setPadding(150,10,0,10);
-        textView.setTextColor(Color.WHITE);
-        textView.setTextSize(20);
-        textView.setOnClickListener(new View.OnClickListener(){
+        final TextView singleRoom = new TextView(context);
+        singleRoom.setText(childNames[i][i1]);
+        singleRoom.setPadding(150,10,0,10);
+        singleRoom.setTextColor(Color.WHITE);
+        singleRoom.setTextSize(20);
+        singleRoom.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                //TODO: DODAC POBRANIE DANYCH JAK email, haslo, ip oraz host
-                String serverCommand = "OPEN jankowalski@mail.pl haslo123 " + textView.getText().toString();
-                new Connector(context).execute(serverCommand, "10.10.10.105", "1234");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            String email, password, serverIP;
+            Integer port;
+            email = preferences.getString("email","default@email.com");
+            password = preferences.getString("password","default password");
+            serverIP = preferences.getString("serverIP","192.168.0.1");
+            port = preferences.getInt("port",1234);
+            String serverCommand = "OPEN " + email + " " + password + " " + singleRoom.getText().toString();
+            new Connector(context).execute(serverCommand, serverIP, port.toString());
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             }
         });
-        return textView;
+        return singleRoom;
     }
 
     @Override

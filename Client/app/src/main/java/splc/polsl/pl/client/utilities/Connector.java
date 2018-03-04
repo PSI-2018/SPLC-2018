@@ -59,7 +59,7 @@ public class Connector extends AsyncTask<String, Void, Void>{
         if(!MainActivity.isContextAvailable())
             return;
         if(this.connected){
-            Toast.makeText(this.context.getApplicationContext(),this.response,Toast.LENGTH_LONG).show();
+            Toast.makeText(this.context.getApplicationContext(),this.response,Toast.LENGTH_SHORT).show();
         }else{
             String message = "Could not connect to server - check connection settings";
             Toast.makeText(this.context.getApplicationContext(),message,Toast.LENGTH_LONG).show();

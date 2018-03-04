@@ -18,9 +18,29 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
 
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+        this.emailField = (EditText) findViewById(R.id.emailField);
+        this.passwordField = (EditText) findViewById(R.id.passwordField);
+        this.serverIPField = (EditText) findViewById(R.id.serverIPField);
+        this.portField = (EditText) findViewById(R.id.portField);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        loadSettings();
+        final Button button = (Button) findViewById(R.id.saveAuthorizationData);
+        button.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                saveSettings();
+            }
+        });
+    }
+
     private void loadSettings(){
         String email = this.preferences.getString("email","default e-mail");
-        String password = this.preferences.getString("password", "pasword");
+        String password = this.preferences.getString("password", "default pasword");
         String serverIP = this.preferences.getString("serverIP", "192.168.0.1");
         Integer port = this.preferences.getInt("port",1234);
 
@@ -44,25 +64,6 @@ public class SettingsActivity extends AppCompatActivity {
         String message = preferencesEditor.commit() ? "Successfuly saved" : "Error while saving";
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
         super.finish();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        this.emailField = (EditText) findViewById(R.id.emailField);
-        this.passwordField = (EditText) findViewById(R.id.passwordField);
-        this.serverIPField = (EditText) findViewById(R.id.serverIPField);
-        this.portField = (EditText) findViewById(R.id.portField);
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        loadSettings();
-        final Button button = (Button) findViewById(R.id.saveAuthorizationData);
-        button.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                saveSettings();
-            }
-        });
-
     }
 
 }

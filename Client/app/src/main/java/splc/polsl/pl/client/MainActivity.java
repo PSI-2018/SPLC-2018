@@ -1,17 +1,19 @@
 package splc.polsl.pl.client;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import splc.polsl.pl.client.utilities.ExpandableListViewAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    ExpandableListView expandableListView;
     public static boolean contextStatus;
 
     private static void setContextStatus(boolean contextStatus){
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        ExpandableListView expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         ExpandableListViewAdapter adapter = new ExpandableListViewAdapter(MainActivity.this);
         expandableListView.setAdapter(adapter);
     }
