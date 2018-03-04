@@ -3,7 +3,9 @@ package splc.polsl.pl.client;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
-import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.content.Intent;
 
 import splc.polsl.pl.client.utilities.ExpandableListViewAdapter;
 
@@ -24,11 +26,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActionBar actionBar = (ActionBar) getSupportActionBar();
-        expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        ExpandableListViewAdapter adapter = new ExpandableListViewAdapter(MainActivity.this, actionBar);
+        this.expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        ExpandableListViewAdapter adapter = new ExpandableListViewAdapter(MainActivity.this);
         expandableListView.setAdapter(adapter);
+    }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.exit:
+                finish();
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     @Override

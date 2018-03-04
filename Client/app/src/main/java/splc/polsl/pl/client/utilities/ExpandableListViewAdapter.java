@@ -14,7 +14,7 @@ import splc.polsl.pl.client.MainActivity;
 
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     private Context context;
-    private ActionBar actionBar;
+
 
     String [] groupNames = {
             "Pietro 0",
@@ -42,9 +42,8 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
     };
 
 
-    public ExpandableListViewAdapter(Context context, ActionBar actionBar){
+    public ExpandableListViewAdapter(Context context){
         this.context = context;
-        this.actionBar = actionBar;
     }
 
     @Override
@@ -87,7 +86,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView textView = new TextView(context);
         textView.setText(groupNames[i]);
         textView.setPadding(100,0,0,0);
-        textView.setTextColor(Color.BLACK);
+        textView.setTextColor(Color.WHITE);
         textView.setTextSize(30);
         return textView;
     }
