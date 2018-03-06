@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import splc.polsl.pl.client.utilities.Connector;
 import splc.polsl.pl.client.utilities.ExpandableListViewAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+            case R.id.test_connection:
+                new Connector(this).execute(Connector.RequestType.TEST_CONNECTION);
+                break;
             case R.id.settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -57,31 +61,31 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        super.onStop();
         MainActivity.setContextStatus(false);
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         MainActivity.setContextStatus(false);
+        super.onDestroy();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         MainActivity.setContextStatus(false);
+        super.onPause();
     }
 
     @Override
     protected void onStart() {
-        super.onStart();
         MainActivity.setContextStatus(true);
+        super.onStart();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         MainActivity.setContextStatus(true);
+        super.onResume();
     }
 }

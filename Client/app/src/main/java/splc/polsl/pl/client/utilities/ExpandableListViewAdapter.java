@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.support.v7.app.ActionBar;
+import splc.polsl.pl.client.utilities.Connector.RequestType;
 
 import splc.polsl.pl.client.MainActivity;
 
@@ -96,22 +95,19 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-        final TextView singleRoom = new TextView(context);
-        singleRoom.setText(childNames[i][i1]);
-        singleRoom.setPadding(150,10,0,10);
-        singleRoom.setTextColor(Color.WHITE);
-        singleRoom.setTextSize(20);
-        singleRoom.setOnClickListener(new View.OnClickListener(){
+        final TextView selectedRoom = new TextView(context);
+        selectedRoom.setText(childNames[i][i1]);
+        selectedRoom.setPadding(150,10,0,10);
+        selectedRoom.setTextColor(Color.WHITE);
+        selectedRoom.setTextSize(20);
+        selectedRoom.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-            String email, password, serverIP;
-            Integer port;
-            email = preferences.getString("email","default@email.com");
-            password = preferences.getString("password","default password");
-            serverIP = preferences.getString("serverIP","192.168.0.1");
-            port = preferences.getInt("port",1234);
-            String serverCommand = "OPEN " + email + " " + password + " " + singleRoom.getText().toString();
-            new Connector(context).execute(serverCommand, serverIP, port.toString());
+            String email = preferences.getString("email","default@email.com");
+            String password = preferences.getString("password","default password");
+
+            String serverCommand = "OPEN " + email + " " + password + " " + selectedRoom.getText().toString();
+            new Connector(context).execute(RequestType.OPEN_DOOR, serverCommand);
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -119,7 +115,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
             }
             }
         });
-        return singleRoom;
+        return selectedRoom;
     }
 
     @Override
