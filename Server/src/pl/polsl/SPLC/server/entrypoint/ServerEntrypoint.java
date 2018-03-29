@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Properties;
 import pl.polsl.SPLC.model.Person;
 
+
+
+
 /**
  * The starting point of server application
  * 
@@ -22,11 +25,11 @@ public class ServerEntrypoint {
     /**
      * Name of configuration file
      */
-    private final static String propertiesFileName = "config.properties";
+    private final static String propertiesFileName = "cfg\\config.properties";
     /**
      * Name of file containing privileges
      */
-    private final static String privilegesFileName = "privileges.txt";
+    private final static String privilegesFileName = "cfg\\privileges.txt";
     
     /**
      * Contains persons data and privileges

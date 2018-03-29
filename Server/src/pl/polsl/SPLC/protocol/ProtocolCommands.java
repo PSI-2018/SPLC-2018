@@ -6,9 +6,21 @@ package pl.polsl.SPLC.protocol;
  * @author Lukasz Blasiak
  * @version 1.0
  */
+
+
+
 public enum ProtocolCommands {
     /**
      * Open doors command
      */
-    OPEN
+    OPEN,
+    /**
+     * Returns doors list
+     */
+    GET_DOORS_LIST,
+    
+    /**
+     * Returns login operation successful
+     */
+    LOGIN
 }

@@ -52,6 +52,10 @@ public class Person {
         return OpenStatus.NO_PRIVILEGED;
     }
     
+    public boolean isLoginDataCorrect(String email, String password){
+        return (this.email.equals(email) && this.password.equals(password));
+    }
+    
     /**
      * Print user data
      * @return user data

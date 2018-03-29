@@ -13,23 +13,33 @@ public class Protocol {
     /**
      * String array which contains client arguments
      */
-    private final String[] arguments;
+    private final List<String> arguments;
     /**
      * Variable which contains client command
      */
     private String command ;
     
     /**
-     * Amount of arguments
+     * Amount of arguments for 'open' command
      */
-    private final int argumentsCount = 3;
+    private final int OPEN_COMMAND_ARGUMENTS_COUNT = 3;
+    
+    /**
+     * Amount of arguments for 'get_door_list' command
+     */
+    private final int DOORS_LIST_COMMAND_ARGUMENTS_COUNT = 2;
+    
+    /**
+     * Amount of arguments for 'login' command
+     */
+    private final int LOGIN_COMMAND_ARGUMENTS_COUNT = 2;
     
     /**
      * Default constructor for protocol
      */
     public Protocol(){
      this.command = "UNKNOWN COMMAND";  
-     this.arguments = new String[argumentsCount];
+     this.arguments = new ArrayList<>();
     }
     
     
@@ -40,23 +50,43 @@ public class Protocol {
     public void handleCommandLine(String clientInputLine){
         if(clientInputLine == null){
             this.command = "UNKNOWN COMMAND";
+            this.arguments.clear();
             return;
         }
         List<String> inputs = new ArrayList<>(Arrays.asList(clientInputLine.split(" ")));
-        if(inputs.isEmpty() || !this.isCorrectCommand(inputs.get(0)) || inputs.size() != this.argumentsCount+1)
+        if(inputs.isEmpty() || !this.isCorrectCommand(inputs.get(0)) || !isArgumentsAmountCorrent(inputs)){
             this.command = "UNKNOWN COMMAND";
+            this.arguments.clear();
+        }
         else{
             this.command = inputs.get(0);
-            for(int i=1; i<argumentsCount+1;i++)
-                this.arguments[i-1] = inputs.get(i);
+            for(int i=1; i<inputs.size();i++)
+                this.arguments.add(inputs.get(i));
         }
+    }
+    
+    /**
+     * Check if arguments amount is correct for command
+     * @param inputs user inputs
+     * @return true if amount if correct, otherwise return false
+     */
+    private boolean isArgumentsAmountCorrent(List<String> inputs){
+        switch(inputs.get(0).toUpperCase()){
+            case "OPEN":
+                return inputs.size() == this.OPEN_COMMAND_ARGUMENTS_COUNT + 1;
+            case "GET_DOORS_LIST":
+                return inputs.size() == this.DOORS_LIST_COMMAND_ARGUMENTS_COUNT + 1;
+            case "LOGIN":
+                return inputs.size() == this.LOGIN_COMMAND_ARGUMENTS_COUNT + 1;
+        }
+        return false;
     }
     
     /**
      * Getter for client arguments
      * @return array of client arguments
      */
-    public String[] getArguments(){
+    public List<String> getArguments(){
         return this.arguments;
     }
     

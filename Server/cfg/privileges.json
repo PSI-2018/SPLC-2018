@@ -1,0 +1,34 @@
+{
+	"users":[
+		{
+			"email":"jankowalski@mail.pl",
+			"password":"haslo123",
+			"rooms_privileged":[315, 129, 933, 301, 305]
+		},
+		{
+			"email":"nowak@gmail.com",
+			"password":"now@k321",
+			"rooms_privileged":[100, 234, 622]
+		},
+		{
+			"email":"malgorzata@company.com",
+			"password":"p@ssw0rd",
+			"rooms_privileged":[510]
+		},
+		{
+			"email":"dawid@wp.pl",
+			"password":"321haslo",
+			"rooms_privileged":[512, 325, 152, 632, 732]
+		},
+		{
+			"email":"lukasz@student.pl",
+			"password":"haslo123",
+			"rooms_privileged":[101, 202, 303, 404]
+		},
+		{
+			"email":"a",
+			"password":"b",
+			"rooms_privileged":[101, 202, 303]
+		}
+	]
+}
