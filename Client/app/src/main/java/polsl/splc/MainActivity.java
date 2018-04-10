@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         if (loginResult) {
             startButton.setVisibility(View.VISIBLE);
             result.setText("Logged");
+            moveOn();
         } else {
             result.setText("Wrong credentials");
         }

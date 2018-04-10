@@ -76,6 +76,17 @@ public class LoggedActivity extends AppCompatActivity {
                 public void onNothingSelected(AdapterView<?> arg0) {
                 }
             });
+            rooms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                           int id, long position) {
+                    chosenRoom = (int) position;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0) {
+                }
+            });
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -138,6 +149,7 @@ public class LoggedActivity extends AppCompatActivity {
     }
 
     void getFromSpinners() {
+        /*
         rooms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
@@ -148,7 +160,7 @@ public class LoggedActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
-        });
+        });*/
         int roomNumber = allFloors.get(chosenFloor).getAllRooms().get(chosenRoom).getNumber();
         boolean ifOk = client.checkPrivileges(userEmail, userPassword, Integer.toString(roomNumber));
         if (ifOk) {

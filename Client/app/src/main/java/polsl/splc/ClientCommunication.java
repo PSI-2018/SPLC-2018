@@ -165,6 +165,7 @@ public class ClientCommunication extends MainActivity {
             boolean operationResult = false;
             try {
                 socket = new Socket();
+                System.out.println("host: "+hostA+" port: "+portA);
                 socket.connect(new InetSocketAddress(hostA, portA), 3000);
                 outT = new PrintWriter(
                         new BufferedWriter(
