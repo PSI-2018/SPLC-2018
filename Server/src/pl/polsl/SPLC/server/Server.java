@@ -10,8 +10,6 @@ package pl.polsl.SPLC.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
-import pl.polsl.SPLC.model.Person;
 
 public class Server {
 
@@ -19,27 +17,21 @@ public class Server {
      * The port number for connecting
      */
     private final int PORT;
-    
    
-    /**
-     * Containig persons data with they privilaged room numbers
-     */
-    private final List<Person> personsPrivileges;
-    
     /**
      * Server's socket which is an entry point for information
      */
     private ServerSocket serverSocket;
 
+    private Connector connector = new Connector();
+    
     /**
      * The default constructor, creates a socket with the default port number
      * and informs if connection was successful
      * @param port port number
-     * @param personsPrivilages list containig persons data with they privilaged room numbers
      */
-    public Server(int port, List<Person> personsPrivilages) {
+    public Server(int port) {
         this.PORT = port;
-        this.personsPrivileges = personsPrivilages;
         try {
             this.serverSocket = new ServerSocket(PORT);
             System.out.println("The server configured properly.");
@@ -59,7 +51,7 @@ public class Server {
                 try {
                     // creates new service for every connected client
                     SingleService singleService 
-                            = new SingleService(socket, this.personsPrivileges);
+                            = new SingleService(socket, this.connector);
                     singleService.start();
                 } catch (IOException e) {
                     socket.close();

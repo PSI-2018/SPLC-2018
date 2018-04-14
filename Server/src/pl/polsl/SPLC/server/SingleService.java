@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.List;
-import pl.polsl.SPLC.model.Person;
 import pl.polsl.SPLC.protocol.Protocol;
 import pl.polsl.SPLC.logger.Logger;
 
@@ -27,7 +25,6 @@ public class SingleService extends Thread{
 
     private final String roomNumbersFileName = "cfg\\rooms.json";
     
-    private final String logFileName = "cfg\\logs.log";
      /**
      * Buffered input character stream
      */
@@ -44,24 +41,22 @@ public class SingleService extends Thread{
      * Socket representing the connection
      */
     private final Socket socket;
-    /**
-     * Contain persons data and privileged room numbers
-     */
-    private final List<Person> personsPrivileges;
     
     private final Logger logger;
+    
+    private final Connector connector;
 
     /**
      * The constructor of instance of the SingleService class. Use the socket as
      * a parameter.
      * @param socket socket representing connection to the client
-     * @param personsPrivileges contains persons data with privileged room numbers
+     * @param connector connector with database
      * @throws java.io.IOException if there were errors with I/O stream
      */
-    public SingleService(Socket socket, List<Person> personsPrivileges) throws IOException {
+    public SingleService(Socket socket, Connector connector) throws IOException {
         this.socket = socket;
+        this.connector = connector;
         this.protocol = new Protocol();
-        this.personsPrivileges = personsPrivileges;
         this.out = new PrintWriter(
                 new BufferedWriter(
                         new OutputStreamWriter(
@@ -96,13 +91,11 @@ public class SingleService extends Thread{
                                 this.protocol.getArguments(),false);
                             this.out.println("AUTHORIZATION FAILED");
                         }
-                        
                         break;
                     case "LOGIN":
                         boolean loginSuccessful = this.handleLoginRequest(true);
                         this.logger.addLoginLog(this.socket.getInetAddress().getHostAddress(),
                                 this.protocol.getArguments(),loginSuccessful);
-                        
                         break;
                     default:
                         out.println("COMMAND NOT FOUND");
@@ -139,34 +132,23 @@ public class SingleService extends Thread{
     private OpenStatus checkPrivilegesToOpenDoors(){
         String email = this.protocol.getArguments().get(0);
         String password = this.protocol.getArguments().get(1);  //TODO: haslo wypadalo by zahashowac (np sha256) ale dla uproszczenia zostawmy poki co tak
-        int roomNumberToOpen;
-        try{
-            roomNumberToOpen = Integer.parseInt(this.protocol.getArguments().get(2));
-        }catch(NumberFormatException e){
-            return OpenStatus.WRONG_ROOM_NUMBER;
-        }
-        OpenStatus openStatus;
-        for(Person person : this.personsPrivileges){
-            openStatus = person.isPrivileged(email, password, roomNumberToOpen);
-            if(openStatus == OpenStatus.PRIVILEGED || openStatus == OpenStatus.NO_PRIVILEGED)
-                return openStatus;
-        }
-        return OpenStatus.AUTHORIZATION_FAILED;
+        String roomNumber = this.protocol.getArguments().get(2);
+        if(!this.connector.login(email, password))
+            return OpenStatus.AUTHORIZATION_FAILED;
+        boolean isPrivileged = this.connector.checkPrivilege(email, password, roomNumber);
+        OpenStatus openStatus = isPrivileged ? OpenStatus.PRIVILEGED : OpenStatus.NO_PRIVILEGED;
+        return openStatus;
     }
     
     private boolean handleLoginRequest(boolean respond){
         String email = this.protocol.getArguments().get(0);
         String password = this.protocol.getArguments().get(1);
-        for(Person person : this.personsPrivileges){
-            if(person.isLoginDataCorrect(email, password)){
-                if(respond)
-                    this.out.println("LOGGED");
-                return true;
-            }
-        }
-        if(respond)
+        boolean loginDataValid = this.connector.login(email, password);
+        if(loginDataValid && respond)
+            this.out.println("LOGGED");
+        else if(respond)
             this.out.println("NOTLOGGED");
-        return false;
+        return loginDataValid;
     }
     
           
@@ -199,7 +181,7 @@ public class SingleService extends Thread{
      * Sends JSON room list to client
      */
     private void sendRoomList(){
-        String fileAsString = roomsJSONToString();
+        String fileAsString = this.roomsJSONToString();
         this.out.println(fileAsString);
     }
     

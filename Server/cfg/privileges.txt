@@ -1,6 +1,0 @@
-jankowalski@mail.pl haslo123 315 129 933 301 305
-nowak@gmail.com now@k321 100 234 622
-malgorzata@company.com p@ssw0rd 510
-dawid@wp.pl 321haslo 512 325 152 632 732
-lukasz@student.pl haslo123 101 202 303 404
-a b 101 202 303
