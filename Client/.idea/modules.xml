@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SPLC.iml" filepath="$PROJECT_DIR$/SPLC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Client.iml" filepath="$PROJECT_DIR$/Client.iml" />
+      <module fileurl="file://E:\REPOZYTORIA\SPLC-2018\Client\SPLC.iml" filepath="E:\REPOZYTORIA\SPLC-2018\Client\SPLC.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

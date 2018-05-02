@@ -34,7 +34,7 @@ public class Server {
         this.PORT = port;
         try {
             this.serverSocket = new ServerSocket(PORT);
-            System.out.println("The server configured properly.");
+            System.out.println("The server has been configured properly.");
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

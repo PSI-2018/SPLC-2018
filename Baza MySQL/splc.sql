@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2018 at 07:24 PM
+-- Generation Time: May 02, 2018 at 03:38 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.1
 
@@ -31,13 +31,11 @@ USE `splc`;
 --
 
 DROP TABLE IF EXISTS `privilege`;
-CREATE TABLE IF NOT EXISTS `privilege` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `privilege` (
+  `Id` int(11) NOT NULL,
   `RoomNumber` text NOT NULL,
-  `UserId` int(11) NOT NULL,
-  PRIMARY KEY (`Id`),
-  KEY `UserId` (`UserId`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+  `UserId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `privilege`
@@ -73,25 +71,58 @@ INSERT INTO `privilege` (`Id`, `RoomNumber`, `UserId`) VALUES
 --
 
 DROP TABLE IF EXISTS `user`;
-CREATE TABLE IF NOT EXISTS `user` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `user` (
+  `Id` int(11) NOT NULL,
   `Email` text NOT NULL,
   `Password` text NOT NULL,
-  `Active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+  `IsAdmin` tinyint(1) NOT NULL,
+  `Active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`Id`, `Email`, `Password`, `Active`) VALUES
-(1, 'jankowalski@mail.pl', 'haslo123', 1),
-(2, 'nowak@gmail.com', 'now@k321', 1),
-(3, 'malgorzata@company.com', 'p@ssw0rd', 1),
-(4, 'dawid@wp.pl', '321haslo', 1),
-(5, 'lukasz@student.pl', 'haslo123', 1),
-(6, 'a', 'b', 1);
+INSERT INTO `user` (`Id`, `Email`, `Password`, `IsAdmin`, `Active`) VALUES
+(1, 'jankowalski@mail.pl', 'haslo123', 0, 1),
+(2, 'nowak@gmail.com', 'now@k321', 0, 1),
+(3, 'malgorzata@company.com', 'p@ssw0rd', 0, 1),
+(4, 'dawid@wp.pl', '321haslo', 0, 1),
+(5, 'lukasz@student.pl', 'haslo123', 0, 1),
+(6, 'a', 'b', 0, 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `privilege`
+--
+ALTER TABLE `privilege`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `UserId` (`UserId`) USING BTREE;
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `privilege`
+--
+ALTER TABLE `privilege`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

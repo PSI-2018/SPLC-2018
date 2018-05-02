@@ -3,3 +3,7 @@
 ################################################################################
 
 /.vs
+Client/.idea/modules.xml
+Client/.idea/modules.xml
+Client/app/src/main/assets/config.properties
+Client/app/src/main/res/raw/config.properties
