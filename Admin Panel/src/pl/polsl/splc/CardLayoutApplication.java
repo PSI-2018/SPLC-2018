@@ -2,17 +2,16 @@ package pl.polsl.splc;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import javax.swing.*;
 
+import static pl.polsl.splc.ManageDB.*;
+import static pl.polsl.splc.DataValidator.*;
+
 public class CardLayoutApplication implements ItemListener {
+    final String currentLoggedEmail; //currently logged admin's email
     JPanel cards; //a panel that uses CardLayout
     final static String cardUserString = "User";
     final static String cardPrivilegeString = "Privilege";
-    final static String cardUserAddString = "userAdd";
-    //JPanel cardsUser;
 
     JButton buttonUserAdd = new JButton("Add");
     JButton buttonUserDelete= new JButton("Delete");
@@ -21,10 +20,19 @@ public class CardLayoutApplication implements ItemListener {
 
     JButton buttonPrivilegeAdd = new JButton("Add");
     JButton buttonPrivilegeDelete = new JButton("Delete");
-    JTextField textfieldPrivilegeEmail = new JTextField("enter user's ID", 20);
-    JTextField textfieldPrivilegePassword = new JTextField("enter room number", 20);
+    JTextField textfieldPrivilegeID = new JTextField("enter user's ID", 20);
+    JTextField textfieldPrivilegeRoom = new JTextField("enter room number", 20);
 
-    public CardLayoutApplication() {
+    public CardLayoutApplication(String givenEmail) {
+        currentLoggedEmail = givenEmail;
+        JFrame frame = new JFrame("Admin Panel");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addComponentToPane(frame.getContentPane());
+        frame.pack();
+        frame.setSize(300, 175);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
         textfieldUserEmail.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
@@ -39,25 +47,65 @@ public class CardLayoutApplication implements ItemListener {
             }
         });
 
-        textfieldPrivilegeEmail.addMouseListener(new MouseAdapter(){
+        textfieldPrivilegeID.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                textfieldPrivilegeEmail.setText("");
+                textfieldPrivilegeID.setText("");
             }
         });
-        textfieldPrivilegePassword.addMouseListener(new MouseAdapter(){
+
+        textfieldPrivilegeRoom.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                textfieldPrivilegePassword.setText("");
+                textfieldPrivilegeRoom.setText("");
             }
         });
 
         buttonUserAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(null,"User added.");
                 try {
-                    createTable();
+                    String newEmail = textfieldUserEmail.getText();
+                    String newPassword = textfieldUserPassword.getText();
+
+                    if (newEmail.equals("enter email") || newPassword.equals("set password")) {
+                        JOptionPane.showMessageDialog(null, "You must type something in the textfield!");
+                    } else if (!isValidEmail(newEmail)) {
+                        JOptionPane.showMessageDialog(null, "Invalid email.");
+                    } else if (newEmail.equals(currentLoggedEmail)) {
+                        JOptionPane.showMessageDialog(null, "You can not add yourself.");
+                    } else {
+                        postUser(newEmail, newPassword);
+                        JOptionPane.showMessageDialog(null,"User added.");
+                    }
+                    textfieldUserEmail.setText("");
+                    textfieldUserPassword.setText("");
+                } catch(Exception e) {
+                    System.out.println(e);
+                }
+            }
+        });
+
+        buttonPrivilegeAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    String newID = textfieldPrivilegeID.getText();
+                    String newRoom = textfieldPrivilegeRoom.getText();
+                    if (newID.equals("enter user's ID") || newRoom.equals("enter room number")) {
+                        JOptionPane.showMessageDialog(null, "You must type something in the textfield!");
+                    } else {
+                        Boolean postResult = postPrivilege(newID, newRoom);
+
+                        if (postResult){
+                            JOptionPane.showMessageDialog(null,"Privilege added.");
+                        } else {
+                            String message = String.format("There is no user with ID %s to set permission to room number %s.", newID, newRoom);
+                            JOptionPane.showMessageDialog(null, message);
+                        }
+                    }
+                    textfieldPrivilegeID.setText("");
+                    textfieldPrivilegeRoom.setText("");
                 } catch(Exception e) {
                     System.out.println(e);
                 }
@@ -66,22 +114,56 @@ public class CardLayoutApplication implements ItemListener {
 
         buttonUserDelete.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null,"User deleted.");
-            }
-        });
-
-        buttonPrivilegeAdd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null,"Privilege added.");
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    String emailToDelete = textfieldUserEmail.getText();
+                    String passwordToDelete = textfieldUserPassword.getText();
+                    if (emailToDelete.equals("enter email") || passwordToDelete.equals("set password")) {
+                        JOptionPane.showMessageDialog(null, "You must type something in the textfield!");
+                    } else if (!isValidEmail(emailToDelete)) {
+                        JOptionPane.showMessageDialog(null, "Invalid email.");
+                    }  else if (emailToDelete.equals(currentLoggedEmail)) {
+                        JOptionPane.showMessageDialog(null, "You can not delete yourself.");
+                    } else {
+                        Boolean deleteResult = deleteUser(emailToDelete, passwordToDelete);
+                        if (deleteResult){
+                            JOptionPane.showMessageDialog(null,"User deleted.");
+                        } else {
+                            String message = String.format("There is no user %s.", emailToDelete);
+                            JOptionPane.showMessageDialog(null, message);
+                        }
+                        textfieldUserEmail.setText("");
+                        textfieldUserPassword.setText("");
+                    }
+                } catch(Exception e) {
+                    System.out.println(e);
+                }
             }
         });
 
         buttonPrivilegeDelete.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null,"Privilege deleted.");
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    String idToDelete = textfieldPrivilegeID.getText();
+                    String roomNumberToDelete = textfieldPrivilegeRoom.getText();
+                    if (idToDelete.equals("enter email") || roomNumberToDelete.equals("set password")) {
+                        JOptionPane.showMessageDialog(null, "You must type something in the textfield!");
+                    } else {
+                        Boolean deleteResult = deletePrivilege(idToDelete, roomNumberToDelete);
+
+                        if (deleteResult){
+                            JOptionPane.showMessageDialog(null,"Privilege deleted.");
+                        } else {
+                            String message = String.format("There is no permission for user with ID %s to room number %s.", idToDelete, roomNumberToDelete);
+                            JOptionPane.showMessageDialog(null, message);
+                        }
+                        textfieldPrivilegeID.setText("");
+                        textfieldPrivilegeRoom.setText("");
+                    }
+                } catch(Exception e) {
+                    System.out.println(e);
+                }
             }
         });
     }
@@ -104,8 +186,8 @@ public class CardLayoutApplication implements ItemListener {
         cardUser.add(buttonUserDelete);
 
         JPanel cardPrivilege = new JPanel();
-        cardPrivilege.add(textfieldPrivilegeEmail);
-        cardPrivilege.add(textfieldPrivilegePassword);
+        cardPrivilege.add(textfieldPrivilegeID);
+        cardPrivilege.add(textfieldPrivilegeRoom);
         cardPrivilege.add(buttonPrivilegeAdd);
         cardPrivilege.add(buttonPrivilegeDelete);
 
@@ -121,77 +203,13 @@ public class CardLayoutApplication implements ItemListener {
     public void itemStateChanged(ItemEvent evt) {
         CardLayout cl = (CardLayout)(cards.getLayout());
         cl.show(cards, (String)evt.getItem());
-    }
-
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("Admin Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        CardLayoutApplication demo = new CardLayoutApplication();
-        demo.addComponentToPane(frame.getContentPane());
-
-        //Display the window.
-        frame.pack();
-        frame.setSize(300, 175);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) throws Exception{
-        /* Use an appropriate Look and Feel */
-        try {
-            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+        if (evt.getItem().equals(cardUserString)) {
+            textfieldUserEmail.setText("enter email");
+            textfieldUserPassword.setText("set password");
         }
-        /* Turn off metal's use of bold fonts */
-        UIManager.put("swing.boldMetal", Boolean.FALSE);
-
-        //Schedule a job for the event dispatch thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    public static void createTable() throws Exception {
-        try{
-            Connection con = getConnection();
-            PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS tablename2(id int NOT NULL AUTO_INCREMENT, first varchar(255), last varchar(255), PRIMARY KEY(id))");
-            create.executeUpdate();
-        }catch(Exception e){
-            System.out.println(e);
+        if (evt.getItem().equals(cardPrivilegeString)){
+            textfieldPrivilegeID.setText("enter user's ID");
+            textfieldPrivilegeRoom.setText("enter room number");
         }
-        finally{
-            System.out.println("Function complete.");
-        }
-    }
-
-    public static Connection getConnection() throws Exception {
-        try {
-            String driver = "com.mysql.jdbc.Driver";
-            String url = "jdbc:mysql://localhost:3306/test";
-            String username = "root";
-            String password = "";
-            Class.forName(driver);
-
-            Connection conn = DriverManager.getConnection(url, username, password);
-            System.out.println("Connected");
-            return conn;
-        } catch(Exception e){
-            System.out.println(e);
-        }
-        return null;
     }
 }
