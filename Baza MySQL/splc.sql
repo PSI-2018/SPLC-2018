@@ -84,12 +84,13 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`Id`, `Email`, `Password`, `IsAdmin`, `Active`) VALUES
-(1, 'jankowalski@mail.pl', 'haslo123', 0, 1),
+(1, 'admin@polsl.pl', 'aei', 1, 1),
 (2, 'nowak@gmail.com', 'now@k321', 0, 1),
 (3, 'malgorzata@company.com', 'p@ssw0rd', 0, 1),
 (4, 'dawid@wp.pl', '321haslo', 0, 1),
 (5, 'lukasz@student.pl', 'haslo123', 0, 1),
-(6, 'a', 'b', 0, 1);
+(6, 'jankowalski@mail.pl', 'haslo123', 0, 1);
+
 
 --
 -- Indexes for dumped tables
@@ -132,7 +133,7 @@ ALTER TABLE `user`
 -- Constraints for table `privilege`
 --
 ALTER TABLE `privilege`
-  ADD CONSTRAINT `privilege_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `user` (`Id`);
+  ADD CONSTRAINT `privilege_ibfk_1` FOREIGN KEY (`UserId`) REFERENCES `user` (`Id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
