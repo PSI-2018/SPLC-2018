@@ -105,18 +105,18 @@ public class ManageDB {
         }
     }
 
-    public static void createTable() throws Exception {
-        try {
-            Connection con = getConnection();
-            PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS tablename2(id int NOT NULL AUTO_INCREMENT, first varchar(255), last varchar(255), PRIMARY KEY(id))");
-            create.executeUpdate();
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-        finally {
-            System.out.println("Function complete.");
-        }
-    }
+//    public static void createTable() throws Exception {
+//        try {
+//            Connection con = getConnection();
+//            PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS tablename2(id int NOT NULL AUTO_INCREMENT, first varchar(255), last varchar(255), PRIMARY KEY(id))");
+//            create.executeUpdate();
+//        } catch(Exception e) {
+//            System.out.println(e);
+//        }
+//        finally {
+//            System.out.println("Function complete.");
+//        }
+//    }
 
     public static Connection getConnection() throws Exception {
         try {
